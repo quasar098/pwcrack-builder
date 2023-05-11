@@ -20,4 +20,4 @@ i am going to build this so that it can be used as a library for convenience
 
 ### expand_wordlist.py
 
-expand a wordlist to account for numbers being words and a few other things too
+expand a wordlist to account for numbers being words (50 -> fifty)
