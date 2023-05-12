@@ -20,4 +20,11 @@ i am going to build this so that it can be used as a library for convenience
 
 ### expand_wordlist.py
 
-expand a wordlist to account for numbers being words (50 -> fifty)
+- expand a wordlist to account for numbers being words (50 -> fifty)
+- account for spacer characters being different ('-', '_', '')
+- account for signs like % being represented as "percent" instead
+
+### enumerate.py
+
+- enumerate over common password possibilities when given a wordlist
+- has two modes, `basic` and `advanced`
