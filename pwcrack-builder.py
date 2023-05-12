@@ -6,15 +6,23 @@ from typing import Generator, Callable
 import src.utils
 import src.expand
 import src.enumerate
+import src.cases
 
 TOOL_MAPPING = {
     "expand": src.expand.expand_password,
-    "enumerate": src.enumerate.enumerate_password
+    "enumerate": src.enumerate.enumerate_password,
+    "cases": src.cases.cases_password,
+    "basic_cases": lambda _original: src.cases.cases_password(_original, max_caps=3)
 }
 
 TOOL_ALIASES = {
     "enum": "enumerate",
-    "exp": "expand"
+    "exp": "expand",
+    "case": "cases",
+    "toggle": "cases",
+    "caps": "cases",
+    "basic_toggle": "basic_cases",
+    "basic_caps": "basic_cases"
 }
 
 
@@ -41,9 +49,12 @@ def main():
         funcs.append(TOOL_MAPPING.get(TOOL_ALIASES.get(tool, tool), generic_help_message))
 
     with open(infile, 'r') as f:
-        for line in src.utils.get_next_line(f):
-            for pwd in recursive_generate(line, funcs):
-                print(pwd)
+        try:
+            for line in src.utils.get_next_line(f):
+                for pwd in recursive_generate(line, funcs):
+                    print(pwd)
+        except BrokenPipeError:
+            print("Broken Pipe Error: See JTR/Hashcat Output")
 
 
 def recursive_generate(original: str, funcs: list[Callable]) -> Generator[str, None, None]:

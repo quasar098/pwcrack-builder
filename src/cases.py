@@ -62,30 +62,44 @@ BASIC_ENUMERATION = [
 # ]
 
 
-def enumerate_wordlist(infile: TextIO, enumeration_possibilties: list = None, remove_duplicates=True) -> Generator[str, None, None]:
-    """Enumerate all the passwords in an entire file"""
-    seen = set()
+def cases_wordlist(infile: TextIO) -> Generator[str, None, None]:
+    """Enumerate cases for all the passwords in an entire file"""
     for line in src.utils.get_next_line(infile):
-        for new in enumerate_password(line, enumeration_possibilties, remove_duplicates=remove_duplicates):
-            if remove_duplicates:
-                if new not in seen:
-                    seen.add(new)
-                    yield new
+        for new in cases_password(line):
+            yield new
+
+
+def cases_password(original: str, remove_duplicates=True, max_caps=5) -> Generator[str, None, None]:
+    """Enumerate cases for a single password"""
+
+    def toggle_the_cases(word: str, indexes_to_toggle: list[int]) -> str:
+        new_word = []
+        for toggle_index, letter in enumerate(word):
+            if toggle_index in indexes_to_toggle:
+                new_word.append(letter.upper())
             else:
-                yield new
+                new_word.append(letter.lower())
+        return "".join(new_word)
 
-
-def enumerate_password(original: str, enumeration_possibilities=None, remove_duplicates=True):
-    """Enumerate a single password"""
-    if enumeration_possibilities is None:
-        enumeration_possibilities = BASIC_ENUMERATION
+    yield original
     seen = set()
-    for enum in enumeration_possibilities:
-        new_enum = [(enu if enu is not None else [original]) for enu in enum]
-        for word in src.utils.enumerate_list_of_lists(new_enum, True):
-            if remove_duplicates:
-                if word not in seen:
-                    seen.add(word)
-                    yield word
+    for how_many_toggle in range(1, max_caps):
+        # screw you to anyone who says 'indicies' 🤓 nerd
+        do_toggle = [0] * how_many_toggle
+        while True:
+            for do_toggle_index in range(len(do_toggle)):
+                if do_toggle_index == 0:
+                    begin = toggle_the_cases(original, do_toggle)
+                    if remove_duplicates:
+                        if begin not in seen:
+                            seen.add(begin)
+                            yield begin
+                    else:
+                        yield begin
+                do_toggle[do_toggle_index] += 1
+                if do_toggle[do_toggle_index] == len(original):
+                    do_toggle[do_toggle_index] = 0
+                    continue
+                break
             else:
-                yield word
+                break

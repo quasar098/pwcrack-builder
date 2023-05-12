@@ -23,7 +23,7 @@ def expand_wordlist(infile: TextIO, debug=False, remove_duplicates=True) -> Gene
     seen = set()
     for line in src.utils.get_next_line(infile):
         total_lines += 1
-        for expanded in expand_password(line, remove_duplicates=True):
+        for expanded in expand_password(line, remove_duplicates=remove_duplicates):
             if expanded not in seen:
                 seen.add(expanded)
                 total_expand += 1
@@ -64,7 +64,7 @@ def expand_password(original: str, remove_duplicates=True) -> Generator[str, Non
             builder = ""
             return
         else:
-            chunks.append([builder])
+            chunks.append([builder, builder.lower()])
             builder = ""
             return
 
