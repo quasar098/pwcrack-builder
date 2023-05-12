@@ -52,4 +52,4 @@ this tool can crack crazy passwords if you have a good, small wordlist
 - `expand+enum2`: `Eblinkonehundredandeighty-two#`
 - `cases`: `CityiNtHe-cloUd`
 - `expand+cases`: `twEnTyonePilOts`
-- `enum+basic_cases`: `XCityinthe-clouDX`
+- `basic_cases+enum`: `XCityinthe-clouDX`
