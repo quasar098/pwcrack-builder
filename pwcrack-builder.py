@@ -33,7 +33,8 @@ def main():
     tool = sys.argv[1]
     params = sys.argv[2:]
 
-    TOOL_MAPPING.get(TOOL_ALIASES.get(tool, tool), generic_help_message)(params)
+    for _ in TOOL_MAPPING.get(TOOL_ALIASES.get(tool, tool), generic_help_message)(params):
+        print(_)
 
 
 if __name__ == '__main__':

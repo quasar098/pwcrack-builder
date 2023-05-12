@@ -21,13 +21,14 @@ def enumerate_list_of_lists(chunks: list[list[str]], remove_duplicates=False, se
     enumerator = [0] * len(chunks)
     while True:
         for index, enum in enumerate(enumerator):
-            attempt_yield = sep.join([chunk[enumerator[cindex]] for cindex, chunk in enumerate(chunks)])
-            if remove_duplicates:
-                if attempt_yield not in seen:
-                    seen.add(attempt_yield)
+            if index == 0:
+                attempt_yield = sep.join([chunk[enumerator[cindex]] for cindex, chunk in enumerate(chunks)])
+                if remove_duplicates:
+                    if attempt_yield not in seen:
+                        seen.add(attempt_yield)
+                        yield attempt_yield
+                else:
                     yield attempt_yield
-            else:
-                yield attempt_yield
             enumerator[index] += 1
             if enumerator[index] == len(chunks[index]):
                 enumerator[index] = 0

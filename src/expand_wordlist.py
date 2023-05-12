@@ -16,20 +16,30 @@ COMMON_REPLACEMENT = {
 }
 
 
-def expand_wordlist_argparse(params: list[str] = "") -> None:
+def expand_wordlist_argparse(params: list[str] = "") -> Generator[str, None, None]:
     parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
     parser.add_argument("infile", type=str)
+    parser.add_argument("--debug", action="store_true")
     namespace = parser.parse_args(params)
     with open(namespace.infile, 'r') as infile:
-        for new_word in expand_wordlist(infile):
-            print(new_word)
+        for new_word in expand_wordlist(infile, debug=namespace.debug):
+            yield new_word
 
 
-def expand_wordlist(infile: TextIO) -> Generator[str, None, None]:
+def expand_wordlist(infile: TextIO, debug=False, remove_duplicates=True) -> Generator[str, None, None]:
     """Generator function that takes a file as input and yields an expanded word for each output"""
+    total_lines = 0
+    total_expand = 0
+    seen = set()
     for line in src.utils.get_next_line(infile):
+        total_lines += 1
         for expanded in expand_password(line, remove_duplicates=True):
-            yield expanded
+            if expanded not in seen:
+                seen.add(expanded)
+                total_expand += 1
+                yield expanded
+    if debug:
+        print(f"Total: {total_expand} from {total_lines} (~{int(total_expand/total_lines)} per)")
 
 
 def expand_password(original: str, remove_duplicates=True) -> Generator[str, None, None]:
