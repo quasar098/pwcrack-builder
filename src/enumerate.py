@@ -57,33 +57,23 @@ BASIC_ENUMERATION = [
     [DIGIT, None, LETTER]
 ]
 
-
-def enumerate_wordlist_argparse(params: list[str] = "") -> Generator[str, None, None]:
-    parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
-    parser.add_argument("infile", type=str)
-    parser.add_argument("--debug", action="store_true")
-    namespace = parser.parse_args(params)
-    with open(namespace.infile) as infile:
-        for new_word in enumerate_file(
-            infile,
-            BASIC_ENUMERATION,
-            debug=namespace.debug
-        ):
-            yield new_word
+# BASIC_ENUMERATION = [
+#     [SPECIAL, DIGIT, None, DIGIT]
+# ]
 
 
-def enumerate_file(infile: TextIO, enumeration_possibilties: list = None, debug=False) -> Generator[str, None, None]:
-    total_enums = 0
-    total_lines = 0
-    if enumeration_possibilties is None:
-        enumeration_possibilties = BASIC_ENUMERATION
-
+def enumerate_wordlist(infile: TextIO, enumeration_possibilties: list = None, debug=False) -> Generator[str, None, None]:
     for line in src.utils.get_next_line(infile):
-        total_lines += 1
-        for enum in enumeration_possibilties:
-            new_enum = [(enu if enu is not None else [line]) for enu in enum]
-            for word in src.utils.enumerate_list_of_lists(new_enum, True):
+        yield enumerate_password(line, enumeration_possibilties, remove_duplicates=True)
+
+
+def enumerate_password(original: str, enumeration_possibilities=None, remove_duplicates=True):
+    if enumeration_possibilities is None:
+        enumeration_possibilities = BASIC_ENUMERATION
+    seen = set()
+    for enum in enumeration_possibilities:
+        new_enum = [(enu if enu is not None else [original]) for enu in enum]
+        for word in src.utils.enumerate_list_of_lists(new_enum, True):
+            if word not in seen:
+                seen.add(word)
                 yield word
-                total_enums += 1
-    if debug:
-        print(f"Total: {total_enums} from {total_lines} (~{int(total_enums/total_lines)} per)")

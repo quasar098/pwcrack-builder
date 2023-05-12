@@ -16,16 +16,6 @@ COMMON_REPLACEMENT = {
 }
 
 
-def expand_wordlist_argparse(params: list[str] = "") -> Generator[str, None, None]:
-    parser = argparse.ArgumentParser(add_help=False, usage=argparse.SUPPRESS)
-    parser.add_argument("infile", type=str)
-    parser.add_argument("--debug", action="store_true")
-    namespace = parser.parse_args(params)
-    with open(namespace.infile, 'r') as infile:
-        for new_word in expand_wordlist(infile, debug=namespace.debug):
-            yield new_word
-
-
 def expand_wordlist(infile: TextIO, debug=False, remove_duplicates=True) -> Generator[str, None, None]:
     """Generator function that takes a file as input and yields an expanded word for each output"""
     total_lines = 0

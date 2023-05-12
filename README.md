@@ -39,4 +39,4 @@ this tool can crack crazy passwords if you have a good, small wordlist
 
 - `expand`: `blinkonehundredandeighty-two`
 - `enum`: `##DontMindTheStep29`
-- `expand+enum`: `!7Killsninety-nine.nine%OfGerms1`
+- `expand&enum`: `!7Killsninety-nine.nine%OfGerms1`

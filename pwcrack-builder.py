@@ -1,13 +1,15 @@
 #!/usr/bin/python3
 
 import sys
+from typing import Generator, Callable
 
-import src.expand_wordlist
+import src.utils
+import src.expand
 import src.enumerate
 
 TOOL_MAPPING = {
-    "expand": src.expand_wordlist.expand_wordlist_argparse,
-    "enumerate": src.enumerate.enumerate_wordlist_argparse
+    "expand": src.expand.expand_password,
+    "enumerate": src.enumerate.enumerate_password
 }
 
 TOOL_ALIASES = {
@@ -18,7 +20,7 @@ TOOL_ALIASES = {
 
 # noinspection PyUnusedLocal
 def generic_help_message(params: list[str] = None) -> None:
-    help_msg = "Usage: python3 pwcrack-builder <tool> [args]"
+    help_msg = "Usage: python3 pwcrack-builder <tool>(+<tool>)* <filename>"
     help_msg += f"\nPossible tools: {' '.join(TOOL_MAPPING)}"
     print(help_msg)
 
@@ -26,15 +28,33 @@ def generic_help_message(params: list[str] = None) -> None:
 # noinspection PyArgumentList
 def main():
     assert len(sys.argv) != 0, "What? How???"
-    if len(sys.argv) == 1:
+    if len(sys.argv) != 3:
         generic_help_message()
         quit()
 
-    tool = sys.argv[1]
-    params = sys.argv[2:]
+    tools = sys.argv[1].split("+")
+    assert len(tools) > 0
+    infile = sys.argv[2]
 
-    for _ in TOOL_MAPPING.get(TOOL_ALIASES.get(tool, tool), generic_help_message)(params):
-        print(_)
+    funcs = []
+    for tool in tools:
+        funcs.append(TOOL_MAPPING.get(TOOL_ALIASES.get(tool, tool), generic_help_message))
+
+    with open(infile, 'r') as f:
+        for line in src.utils.get_next_line(f):
+            for pwd in recursive_generate(line, funcs):
+                print(pwd)
+
+
+def recursive_generate(original: str, funcs: list[Callable]) -> Generator[str, None, None]:
+    current_fn, *funcs = funcs
+    current_gen = current_fn(original)
+    for gen in current_gen:
+        if len(funcs):
+            for new_gen in recursive_generate(gen, funcs):
+                yield new_gen
+        else:
+            yield gen
 
 
 if __name__ == '__main__':
