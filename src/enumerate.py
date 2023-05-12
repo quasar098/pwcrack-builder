@@ -63,11 +63,13 @@ BASIC_ENUMERATION = [
 
 
 def enumerate_wordlist(infile: TextIO, enumeration_possibilties: list = None, debug=False) -> Generator[str, None, None]:
+    """Enumerate all the passwords in an entire file"""
     for line in src.utils.get_next_line(infile):
         yield enumerate_password(line, enumeration_possibilties, remove_duplicates=True)
 
 
 def enumerate_password(original: str, enumeration_possibilities=None, remove_duplicates=True):
+    """Enumerate a single password"""
     if enumeration_possibilities is None:
         enumeration_possibilities = BASIC_ENUMERATION
     seen = set()

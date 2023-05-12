@@ -10,9 +10,9 @@ Expand wordlist to file
 
 `python3 pwcrack-builder.py expand example/wordlist.txt > expanded-list.txt`
 
-Expand wordlist to JTR
+Expand+Enum wordlist to JTR
 
-`python3 pwcrack-builder.py expand example/wordlist.txt | john --pipe example/passwords.txt`
+`python3 pwcrack-builder.py expand+enum example/wordlist.txt | john --pipe --format="Raw-MD5" example/passwords.txt`
 
 ## python usage
 
@@ -38,5 +38,5 @@ i am going to build this so that it can be used as a library for convenience
 this tool can crack crazy passwords if you have a good, small wordlist
 
 - `expand`: `blinkonehundredandeighty-two`
-- `enum`: `##DontMindTheStep29`
+- `enum`: `#8cloud92`
 - `expand&enum`: `!7Killsninety-nine.nine%OfGerms1`
