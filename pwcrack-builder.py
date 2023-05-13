@@ -2,6 +2,7 @@
 
 import sys
 from typing import Generator, Callable
+from time import time
 
 import src.utils
 import src.expand
@@ -24,6 +25,8 @@ TOOL_ALIASES = {
     "basic_toggle": "basic_cases",
     "basic_caps": "basic_cases"
 }
+
+DEBUG = False
 
 
 # noinspection PyUnusedLocal
@@ -50,9 +53,24 @@ def main():
 
     with open(infile, 'r') as f:
         try:
+            before = time()
+            new_password_count = 0
+            original_wordlist_length = 0
             for line in src.utils.get_next_line(f):
-                for pwd in recursive_generate(line, funcs):
-                    print(pwd)
+                if line == "":
+                    continue
+                original_wordlist_length += 1
+                if DEBUG:
+                    for _ in recursive_generate(line, funcs):
+                        new_password_count += 1
+                else:
+                    for pwd in recursive_generate(line, funcs):
+                        print(pwd)
+            if DEBUG:
+                print(f"Time taken: {time()-before}\n" +
+                      f"Total generated: {new_password_count} from {original_wordlist_length}" +
+                      f" (~{int(new_password_count/original_wordlist_length)} per original word)\n" +
+                      f"Passwords per second: ~{int(new_password_count/(time()-before))}")
         except BrokenPipeError:
             print("Broken Pipe Error: See JTR/Hashcat Output")
 

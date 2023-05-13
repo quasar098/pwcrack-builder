@@ -1,8 +1,8 @@
 # pwcrack-builder
 
-creative idea where you pipe stdout from this program into hashcat or john the ripper instead of making complex rules and stuff
+creative idea (not that practical but whatever) where you pipe stdout from this program into hashcat or john the ripper instead of making complex rules and stuff
 
-designed to work with a reasonably small wordlist (not rockyou, preferably)
+designed to work with a reasonably small wordlist (not rockyou, preferably), and with extremely specific requirements (e.g. reverse the first 4 characters of the word unless the word is in the english dictionary)
 
 ## examples:
 
@@ -53,3 +53,4 @@ this tool can crack crazy passwords if you have a good, small wordlist
 - `cases`: `CityiNtHe-cloUd`
 - `expand+cases`: `twEnTyonePilOts`
 - `basic_cases+enum`: `XCityinthe-clouDX`
+- `basic_cases+enum2`: `5carriE_uNderwood9a`
