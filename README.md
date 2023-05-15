@@ -22,6 +22,13 @@ Enum+Basic_Cases wordlist to JTR
 
 i am going to build this so that it can be used as a library for convenience
 
+## speed
+
+not fast<br>
+i tried using multiprocessing module but it was still slow<br>
+maybe you could use this to generate rulesets idk<br>
+can do `basic_cases+expand+enum` for a 1k length wordlist in ~24 hours (estimated) 
+
 ## files
 
 ### expand_wordlist.py
@@ -41,6 +48,11 @@ i am going to build this so that it can be used as a library for convenience
 
 - lower case the entire word, then change 1-4 letters to capital (try all possibilities)
 - `The_testing123` can turn into `tHe_tEsTiNG123`
+- alternatively use `basic_cases` for 1-2 letters to capital
+
+## it isn't working !11!1
+
+use `+debug` at the end of your tool chain/tool list to print out stats. do not use debug with pipe or redirect!!
 
 ## example/passwords.txt revealed
 

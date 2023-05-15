@@ -56,15 +56,13 @@ def expand_password(original: str, remove_duplicates=True) -> Generator[str, Non
             chunks.append([
                 builder,
                 worded,
-                worded.replace("and", ''),
-                worded.replace("-", ''),
                 worded.replace("and", '').replace("-", ''),
                 better_worded
             ])
             builder = ""
             return
         else:
-            chunks.append([builder, builder.lower()])
+            chunks.append([builder])
             builder = ""
             return
 

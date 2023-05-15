@@ -1,7 +1,7 @@
 from typing import Optional, Union, TextIO, Generator
 
 
-def get_next_line(file: TextIO, sep="\n") -> Optional[str]:
+def get_next_line(file: TextIO, sep="\n") -> Generator[str, None, None]:
     """Generator function to read a file line by line"""
     built = ""
     while char := file.read(1):
@@ -13,6 +13,21 @@ def get_next_line(file: TextIO, sep="\n") -> Optional[str]:
         built += char
     if built:
         yield built
+
+
+def get_all_lines(file: TextIO, sep="\n") -> Optional[list[str]]:
+    lines = []
+    built = ""
+    while char := file.read(1):
+        if char == sep:
+            if built:
+                lines.append(built)
+                built = ""
+            continue
+        built += char
+    if built:
+        lines.append(built)
+    return lines
 
 
 def enumerate_list_of_lists(chunks: list[list[str]], remove_duplicates=False, sep="") -> Generator[str, None, None]:

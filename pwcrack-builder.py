@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import os
 import sys
 from typing import Generator, Callable
 from time import time
@@ -9,11 +10,12 @@ import src.expand
 import src.enumerate
 import src.cases
 
+
 TOOL_MAPPING = {
     "expand": src.expand.expand_password,
     "enumerate": src.enumerate.enumerate_password,
     "cases": src.cases.cases_password,
-    "basic_cases": lambda _original: src.cases.cases_password(_original, max_caps=3)
+    "basic_cases": lambda _original: src.cases.cases_password(_original, remove_duplicates=True, max_caps=3)
 }
 
 TOOL_ALIASES = {
@@ -26,8 +28,6 @@ TOOL_ALIASES = {
     "basic_caps": "basic_cases"
 }
 
-DEBUG = False
-
 
 # noinspection PyUnusedLocal
 def generic_help_message(params: list[str] = None) -> None:
@@ -38,39 +38,47 @@ def generic_help_message(params: list[str] = None) -> None:
 
 # noinspection PyArgumentList
 def main():
+    new_password_count = 0
+    original_wordlist_length = 0
+    debug = False
+
     assert len(sys.argv) != 0, "What? How???"
     if len(sys.argv) != 3:
         generic_help_message()
         quit()
 
     tools = sys.argv[1].split("+")
+    while "debug" in tools:
+        tools.remove("debug")
+        debug = True
     assert len(tools) > 0
     infile = sys.argv[2]
 
     funcs = []
     for tool in tools:
-        funcs.append(TOOL_MAPPING.get(TOOL_ALIASES.get(tool, tool), generic_help_message))
+        newtool = TOOL_MAPPING.get(TOOL_ALIASES.get(tool, tool), None)
+        assert newtool is not None, f"Tool {tool} does not exist"
+        funcs.append(newtool)
 
     with open(infile, 'r') as f:
         try:
             before = time()
-            new_password_count = 0
-            original_wordlist_length = 0
             for line in src.utils.get_next_line(f):
                 if line == "":
                     continue
                 original_wordlist_length += 1
-                if DEBUG:
+                if debug:
                     for _ in recursive_generate(line, funcs):
                         new_password_count += 1
                 else:
                     for pwd in recursive_generate(line, funcs):
                         print(pwd)
-            if DEBUG:
-                print(f"Time taken: {time()-before}\n" +
+            if debug:
+                newtimes = time()-before
+                print(f"Time taken: {newtimes} (~{int(1000*newtimes/original_wordlist_length)}ms per)\n" +
                       f"Total generated: {new_password_count} from {original_wordlist_length}" +
-                      f" (~{int(new_password_count/original_wordlist_length)} per original word)\n" +
-                      f"Passwords per second: ~{int(new_password_count/(time()-before))}")
+                      f" (~{int(new_password_count/original_wordlist_length)} per)\n" +
+                      f"Passwords per second: ~{int(new_password_count/(time()-before))}\n")
         except BrokenPipeError:
             print("Broken Pipe Error: See JTR/Hashcat Output")
 

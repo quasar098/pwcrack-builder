@@ -69,7 +69,7 @@ def cases_wordlist(infile: TextIO) -> Generator[str, None, None]:
             yield new
 
 
-def cases_password(original: str, remove_duplicates=True, max_caps=5) -> Generator[str, None, None]:
+def cases_password(original: str, remove_duplicates=False, max_caps=5) -> Generator[str, None, None]:
     """Enumerate cases for a single password"""
 
     def toggle_the_cases(word: str, indexes_to_toggle: list[int]) -> str:
