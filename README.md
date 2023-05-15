@@ -27,7 +27,7 @@ i am going to build this so that it can be used as a library for convenience
 not fast<br>
 i tried using multiprocessing module but it was still slow<br>
 maybe you could use this to generate rulesets idk<br>
-can do `basic_cases+expand+enum` for a 1k length wordlist in ~24 hours (estimated) 
+can do `basic_cases+expand+enum` for a 1k length wordlist (103 trillion outputs) in ~24 hours (estimated) 
 
 ## files
 
